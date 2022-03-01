@@ -7,7 +7,7 @@ import (
 )
 
 type Order interface {
-	All(*gin.Context)
+	List(*gin.Context)
 	Find(*gin.Context)
 	Add(*gin.Context)
 	Update(*gin.Context)
@@ -16,7 +16,7 @@ type Order interface {
 
 type order struct{}
 
-func (*order) All(context *gin.Context) {
+func (*order) List(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"message": "All",
 	})

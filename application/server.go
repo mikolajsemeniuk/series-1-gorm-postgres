@@ -23,7 +23,7 @@ func (server *server) Listen() {
 	{
 		order := v1.Group("order")
 		{
-			order.GET("", server.order.All)
+			order.GET("", server.order.List)
 			order.GET(":id", server.order.Find)
 			order.POST("", server.order.Add)
 			order.PATCH(":id", server.order.Update)
@@ -36,9 +36,11 @@ func (server *server) Listen() {
 }
 
 func New() Server {
-	return &server{
+	server := &server{
 		configuration: settings.NewConfiguration(),
 		router:        gin.Default(),
 		order:         controllers.NewOrder(),
 	}
+
+	return server
 }

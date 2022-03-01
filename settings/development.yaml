@@ -1,3 +1,10 @@
 server:
-  port: 5000
+  port: 5001
   basepath: /api/v1
+
+database:
+  host: localhost
+  username: root
+  password: P@ssw0rd
+  databasename: orders
+  port: 15432
