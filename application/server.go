@@ -15,7 +15,8 @@ type Server interface {
 type server struct {
 	configuration settings.Configuration
 	router        *gin.Engine
-	order         controllers.Order
+	// TODO: think what to do with multiple controllers
+	order controllers.Order
 }
 
 func (server *server) Listen() {
@@ -35,12 +36,17 @@ func (server *server) Listen() {
 	server.router.Run(port)
 }
 
-func New() Server {
+func New() (Server, error) {
+	configuration, err := settings.NewConfiguration()
+	if err != nil {
+		return nil, err
+	}
+
 	server := &server{
-		configuration: settings.NewConfiguration(),
+		configuration: configuration,
 		router:        gin.Default(),
 		order:         controllers.NewOrder(),
 	}
 
-	return server
+	return server, err
 }

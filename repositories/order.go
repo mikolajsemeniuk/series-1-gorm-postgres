@@ -12,10 +12,15 @@ type order struct {
 	database *gorm.DB
 }
 
-func NewOrder() Order {
-	database := data.NewDatabase()
+func NewOrder() (Order, error) {
+	database, err := data.NewDatabase()
+	if err != nil {
+		return nil, err
+	}
 
-	return &order{
+	order := &order{
 		database: database,
 	}
+
+	return order, nil
 }

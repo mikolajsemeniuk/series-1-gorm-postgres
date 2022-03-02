@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"gorm-postgres/settings"
 	"sync"
 
@@ -11,22 +10,21 @@ import (
 
 var (
 	databaseSingleton *gorm.DB
-	once              sync.Once
+	databaseOnce      sync.Once
+	err               error
 )
 
-func NewDatabase() *gorm.DB {
-	once.Do(func() {
-		configuration := settings.NewConfiguration()
+func NewDatabase() (*gorm.DB, error) {
+	databaseOnce.Do(func() {
+		var configuration settings.Configuration
+		configuration, err = settings.NewConfiguration()
+		if err != nil {
+			return
+		}
 
-		connectionString := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-			configuration.GetDatabaseHost(),
-			configuration.GetDatabaseUsername(),
-			configuration.GetDatabasePassword(),
-			configuration.GetDatabaseName(),
-			configuration.GetDatabasePort())
-
+		connectionString := configuration.GetDatabaseConnectionString()
 		config := &gorm.Config{}
-		databaseSingleton, _ = gorm.Open(postgres.Open(connectionString), config)
+		databaseSingleton, err = gorm.Open(postgres.Open(connectionString), config)
 	})
-	return databaseSingleton
+	return databaseSingleton, err
 }
